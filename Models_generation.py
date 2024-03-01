@@ -4,11 +4,13 @@ from functools import partial
 
 
 # 定义独立的二元线性函数
-def linear_model(x, y, a, b, c):
+def linear_model_2var(x, y, a, b, c):
     return a * x + b * y + c
 
+def linear_model_1var(x, a, b, c):
+    return a * x + b + c
 
-def create_linear_models(number_of_models, if_diff_mono = False):
+def create_linear_models_2inputs(number_of_models, if_diff_mono = False):
     res = []
     if if_diff_mono == True:
         increase_num = number_of_models // 2
@@ -21,7 +23,37 @@ def create_linear_models(number_of_models, if_diff_mono = False):
         c = np.random.randn()  # 随机生成常数项c，可以是任意实数
 
         # 使用partial创建绑定了特定系数的linear_model版本
-        model_temp = partial(linear_model, a=a, b=b, c=c)
+        model_temp = partial(linear_model_2var, a=a, b=b, c=c)
+
+        res.append(model_temp)
+
+    if if_diff_mono == True:
+        for i in range(decrease_num):
+            a = -6.0*np.random.rand()  # 生成负数系数a
+            b = 6.0*np.random.rand()  # 生成负数系数b
+            c = 10  # 随机生成常数项c，可以是任意实数
+
+            # 使用partial创建绑定了特定系数的linear_model版本
+            model_temp = partial(linear_model_2var, a=a, b=b, c=c)
+
+            res.append(model_temp)
+
+    return res
+
+def create_linear_models_1input(number_of_models, if_diff_mono = False):
+    res = []
+    if if_diff_mono == True:
+        increase_num = number_of_models // 2
+        decrease_num = number_of_models - increase_num
+    else:
+        increase_num = number_of_models
+    for i in range(increase_num):
+        a = np.random.rand()  # 生成正数系数a
+        b = np.random.rand()  # 生成正数系数b
+        c = np.random.randn()  # 随机生成常数项c，可以是任意实数
+
+        # 使用partial创建绑定了特定系数的linear_model版本
+        model_temp = partial(linear_model_1var, a=a, b=b, c=c)
 
         res.append(model_temp)
 
@@ -32,7 +64,7 @@ def create_linear_models(number_of_models, if_diff_mono = False):
             c = np.random.randn()  # 随机生成常数项c，可以是任意实数
 
             # 使用partial创建绑定了特定系数的linear_model版本
-            model_temp = partial(linear_model, a=a, b=b, c=c)
+            model_temp = partial(linear_model_1var, a=a, b=b, c=c)
 
             res.append(model_temp)
 
@@ -54,8 +86,8 @@ def create_linear_models(number_of_models, if_diff_mono = False):
 
 def generate_r_space():
     ret = []
-    for i in range(1000):
-        for j in range(1000):
+    for i in range(100):
+        for j in range(100):
             ret.append([i, j])
     return ret
 
